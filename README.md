@@ -1,31 +1,30 @@
-## Building from source
+### Contributor setup notes
 
-**Prerequisites:** Rust (stable), Node.js 20+, platform system deps
-
-Verify before cloning:
-- `rustc --version` — 1.77+ 
+**Verify prerequisites before cloning**
+- `rustc --version` — 1.77+
 - `node --version` — 20+
 
-```sh
-# macOS — no extra deps needed
-# Linux
-sudo apt-get install libwebkit2gtk-4.1-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+**Windows:** Keep the project outside OneDrive. Cargo writes thousands
+of small files to `target/` and OneDrive locks them mid-build, causing
+`Access is denied (os error 5)`. Use a path like `C:\dev\nova`.
 
-**Clone and run**
-git clone https://github.com/mugiwaraluffy56/nova-editor.git
-cd nova-editor
-npm ci
-npm run tauri dev
+**Icons:** `src-tauri/icons/` is not committed to the repo. On Windows
+the first build will fail with `` `icons/icon.ico` not found ``. Fix:
+```bash
+npx tauri icon "your-image.png"  # any square PNG works
 ```
 
-To produce a release build:
-
-```sh
-npm run tauri build
+**Linux:** The apt-get block above may need these additional packages
+depending on your distro version:
+```bash
+build-essential libxdo-dev libgtk-3-dev
 ```
 
-For a macOS universal binary:
+**Clean install:** Always use `npm ci` not `npm install`.
+On Windows: `Remove-Item -Recurse -Force node_modules` to clear the folder.
 
+**Version mismatch warning:** A warning about mismatched Rust/npm versions
+is cosmetic — do not bump npm package versions to match.
 ```sh
 rustup target add aarch64-apple-darwin x86_64-apple-darwin
 npm run tauri build -- --target universal-apple-darwin
